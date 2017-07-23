@@ -63,6 +63,9 @@
 								#calendar > .YYYY > .M > .MM > .D:first-child[data-d="6"] { margin-left: calc(((100% + 6px) / 7) * 6 - 6px); }
 								#calendar > .YYYY > .M > .MM > .D > .num { position: absolute; font-size: 11px; top: 0px; left: 4px; }
 								#calendar > .YYYY > .M > .MM > .D:hover > .num { font-weight: 700; }
+            .info.icon{
+                padding-left: 20px;
+            }
 		</style>
 	</head>
 	<body>
@@ -100,10 +103,11 @@
                     this.footballMatches.forEach((e) => {
                          var gameString = e.footbalTeams.teams[0].name + " - " + e.footbalTeams.teams[1].name;
                          $('[data-date="' + e.date + '"]')
-                             .append('<i class="add tiny icon" data-content="' + gameString+ '"></i>');
+                             .append('<i class="info icon" data-content="' + gameString+ '"></i><div')
+                             .css({"border-radius":"50%","border":"0.5px dashed #32358F"});
                      });
                     
-                    $('.add.tiny.icon').popup();
+                    $('.info.icon').popup();
 				}
 
                 
