@@ -12,7 +12,7 @@
 		<!-- jQuery -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		<!-- Semantic UI -->
-		<link href="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.css" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.css" rel="stylesheet">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.js"></script>
 		<!-- Lato -->
 		<link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i&amp;subset=latin-ext" rel="stylesheet">
@@ -70,10 +70,11 @@
 		<script>
 			/* Calendar */
 			class Calendar {
-				constructor(element, locale, callback) {
+				constructor(element, locale,footballMatches, callback) {
 					this.element = element;
 					this.locale = locale;
 					this.callback = callback;
+                    this.footballMatches = footballMatches;
 					moment.locale(locale);
 					this.show(moment().year());
 				}
@@ -96,12 +97,18 @@
 					this.element.querySelector('.prev').addEventListener('click', () => { this.show(--this.year); });
 					this.element.querySelector('.next').addEventListener('click', () => { this.show(++this.year); });
 					this.element.querySelectorAll('.D').forEach((element) => element.addEventListener('click', (event) => { this.callback(event.target.getAttribute('data-date')); }));
+                    this.footballMatches.forEach((e) => {
+                         var gameString = e.footbalTeams.teams[0].name + " - " + e.footbalTeams.teams[1].name;
+                         $('[data-date="' + e.date + '"]')
+                             .append('<i class="add tiny icon" data-content="' + gameString+ '"></i>');
+                     });
+                    
+                    $('.add.tiny.icon').popup();
 				}
+
+                
 			}
 			
-			new Calendar(document.getElementById('calendar'), 'en', function(date) {
-				alert(date);
-			});
             
             var footballMatches = [{
                 date: "2017-07-24",
@@ -151,6 +158,10 @@
                         }]
                 }
             }];
+            
+            new Calendar(document.getElementById('calendar'), 'en',footballMatches, function(date) {
+				alert(date);
+			});
 		</script>
 	</body>
 </html>
