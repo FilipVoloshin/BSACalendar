@@ -66,10 +66,51 @@
             .info.icon{
                 padding-left: 20px;
             }
+            #matches-content{
+                text-align: center;
+            }
+            .image content{
+                width: 100px;
+                height: 100px;
+            }
+            /* Remove outline of input after modal opening*/
+            *:focus {
+                outline: none;
+            }
 		</style>
 	</head>
 	<body>
 		<div id="calendar"></div>
+        <div class="ui modal">
+          <i class="close icon"></i>
+          <div class="header">
+            Information about teams:
+          </div>
+          <div class="image content">
+            <div class="ui medium image">
+              <img id="homeTeamImg" src="">
+            </div>
+            <div class="description">
+              <div class="ui header"><a id="homeTeamHeader" target="_blank"></a></div>
+              <p id="homeTeamDescription">HTD</p>
+            </div>
+          </div>
+        <div class="image content">
+            <div class="ui medium image">
+              <img id="guestTeamImg" src="">
+            </div>
+            <div class="description">
+              <div class="ui header"><a id="guestTeamHeader" target="_blank"></a></div>
+              <p id="guestTeamDescription">GTD</p>
+            </div>
+          </div>
+          <div class="actions">
+            <div class="ui positive right labeled icon button">
+              Ok
+              <i class="soccer icon"></i>
+            </div>
+          </div>
+        </div>
 		<script>
 			/* Calendar */
 			class Calendar {
@@ -99,12 +140,24 @@
 					this.element.innerHTML = '<nav><a href="#" class="nav prev" draggable="false"><svg viewBox="0 0 512 512"><path d="M189.8,349.7c3.1-3.1,3-8,0-11.3L123.4,264H408c4.4,0,8-3.6,8-8c0-4.4-3.6-8-8-8H123.4l66.3-74.4c2.9-3.4,3.2-8.1,0.1-11.2c-3.1-3.1-8.5-3.3-11.4-0.1c0,0-79.2,87-80,88S96,253.1,96,256s1.6,4.9,2.4,5.7s80,88,80,88c1.5,1.5,3.6,2.3,5.7,2.3C186.2,352,188.2,351.2,189.8,349.7z"/></svg></a><div class="title"><strong>' + year + '</strong></div><a href="#" class="nav next" draggable="false"><svg viewBox="0 0 512 512"><path d="M322.2,349.7c-3.1-3.1-3-8,0-11.3l66.4-74.4H104c-4.4,0-8-3.6-8-8c0-4.4,3.6-8,8-8h284.6l-66.3-74.4c-2.9-3.4-3.2-8.1-0.1-11.2c3.1-3.1,8.5-3.3,11.4-0.1c0,0,79.2,87,80,88s2.4,2.8,2.4,5.7s-1.6,4.9-2.4,5.7s-80,88-80,88c-1.5,1.5-3.6,2.3-5.7,2.3C325.8,352,323.8,351.2,322.2,349.7z"/></svg></a></nav><div class="YYYY" data-w="' + r + '">' + y + '</div>';
 					this.element.querySelector('.prev').addEventListener('click', () => { this.show(--this.year); });
 					this.element.querySelector('.next').addEventListener('click', () => { this.show(++this.year); });
-					this.element.querySelectorAll('.D').forEach((element) => element.addEventListener('click', (event) => { this.callback(event.target.getAttribute('data-date')); }));
                     this.footballMatches.forEach((e) => {
-                         var gameString = e.footbalTeams.teams[0].name + " - " + e.footbalTeams.teams[1].name;
-                         $('[data-date="' + e.date + '"]')
-                             .append('<i class="info icon" data-content="' + gameString+ '"></i><div')
-                             .css({"border-radius":"50%","border":"0.5px dashed #32358F"});
+                         var gameString = e.teams[0].name + " - " + e.teams[1].name;
+                         var dataHtml = $('[data-date="' + e.date + '"]');
+                         dataHtml.append('<i class="info icon" data-content="' + gameString+ '"></i><div')
+                                 .css({"border-radius":"50%","border":"0.5px dashed #32358F"});
+                         dataHtml.click(function(){
+                            $('.ui.modal').modal({
+                                onShow: function(data){
+                                    $("#homeTeamImg").attr("src",data.teams[0].icon);
+                                    $("#guestTeamImg").attr("src",data.teams[1].icon);
+                                    $("#homeTeamDescription").text(data.teams[0].description);
+                                    $("#guestTeamDescription").text(data.teams[1].description);
+                                    $("#homeTeamHeader").text(data.teams[0].name).attr('href',data.teams[0].url);
+                                    $("#guestTeamHeader").text(data.teams[1].name).attr('href',data.teams[1].url);
+                                    
+                                }(e)
+                            }).modal("show");
+                        });
                      });
                     
                     $('.info.icon').popup();
@@ -117,50 +170,50 @@
             var footballMatches = [{
                 date: "2017-07-24",
                 time: "00:00",
-                footbalTeams:{
                     teams:[{
                             name: "Manchester United",
-                            icon: "MU",
-                            url: ""
+                            icon: "img/manu.png",
+                            url: "http://www.manutd.com/",
+                            description: "Manchester United Football Club is a professional football club based in Old Trafford, Greater Manchester, England, that competes in the Premier League, the top flight of English football. "
                         },
                         {
                             name: "Real Madrid",
-                            icon: "RM",
-                            url: ""
+                            icon: "img/realm.png",
+                            url: "http://www.realmadrid.com/en",
+                            description: "Real Madrid Club de Fútbol (Spanish pronunciation: [reˈal maˈðɾið ˈkluβ ðe ˈfuðβol]; Royal Madrid Football Club), commonly known as Real Madrid, or simply as Real, is a professional football club based in Madrid, Spain."
                         }]
-                }
             },
             {
                 date: "2017-07-27",
                 time: "14:25",
-                footbalTeams:{
                     teams:[{
                             name: "FC Bayern",
-                            icon: "FCB",
-                            url: ""
+                            icon: "img/fcb.png",
+                            url: "https://fcbayern.com/ru",
+                            description: "Fußball-Club Bayern München e.V., commonly known as FC Bayern München (German pronunciation: [ʔɛf tseː ˈbaɪɐn ˈmʏnçn̩]), FCB, Bayern Munich, or FC Bayern, is a German sports club based in Munich, Bavaria (Bayern), Germany. It is best known for its professional football team, which plays in the Bundesliga, the top tier of the German football league system, and is the most successful club in German football history, having won a record 27 national titles and 18 national cups."
                         },
                         {
                             name: "Inter Milan",
-                            icon: "IM",
-                            url: ""
+                            icon: "img/inter.png",
+                            url: "http://www.inter.it/en/hp",
+                            description: "F.C. Internazionale Milano,[6] commonly referred to as Internazionale (pronounced [ˌinternattsjoˈnaːle]) or simply Inter and colloquially known as Inter Milan outside of Italy, is a professional Italian football club based in Milan, Lombardy. The club have played continuously in the top tier of the Italian football league system since its debut in 1909."
                         }]
-                }
             },
             {
                 date: "2017-07-30",
                 time: "01:00",
-                footbalTeams:{
                     teams:[{
                             name: "Manchester city",
-                            icon: "MC",
-                            url: ""
+                            icon: "img/manc.png",
+                            url: "https://www.mancity.com/",
+                            description: "Manchester City Football Club is a football club in Manchester, England. Founded in 1880 as St. Mark's (West Gorton), they became Ardwick Association Football Club in 1887 and Manchester City in 1894. The club moved to the City of Manchester Stadium in 2003, having played at Maine Road since 1923."
                         },
                         {
                             name: "Tottenham Hotspur",
-                            icon: "TH",
-                            url: ""
+                            icon: "img/tott.png",
+                            url: "http://www.tottenhamhotspur.com/",
+                            description: "Tottenham Hotspur Football Club, commonly referred to simply as Tottenham (/ˈtɒtnəm, -tən-/) or Spurs, is an English football club located in Tottenham, Haringey, London, that competes in the Premier League. The club's home for the 2017–18 season will be Wembley Stadium, as their former home of White Hart Lane is being dismantled to make way for a completely new rebuilt stadium on the same site. Their newly developed training ground is in Bulls Cross on the northern borders of the London Borough of Enfield."
                         }]
-                }
             }];
             
             new Calendar(document.getElementById('calendar'), 'en',footballMatches, function(date) {
